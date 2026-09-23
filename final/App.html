@@ -60,6 +60,40 @@
 <script>
   let state = {selectedDate: null};
 
+  function renderWeek(weekHtml) {
+    var weekDisplay = document.getElementById('week');
+    weekDisplay.innerHTML = weekHtml;
+
+    var buttons = weekDisplay.querySelectorAll('button.open-recipe-box');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener('click', function (e) {
+        const scheduleButton = e.currentTarget;
+        state.selectedDate = scheduleButton.dataset.timestamp;
+        e.stopPropagation();
+        showRecipePopup(e);
+      });
+    }
+  }
+
+  function load(reloading) {
+    if (!reloading) {
+      document.getElementById('recipebox').innerHTML = 'Loading';
+      google.script.run.withSuccessHandler(
+        (r) => {
+          renderRecipesPopup(r)
+        }
+      ).createRecipeListLayout();
+
+      document.getElementById('week').innerHTML = 'Loading';
+    }
+
+    google.script.run.withSuccessHandler(
+      (w) => {
+        renderWeek(w)
+      }
+    ).createWeekLayout();
+  }
+
   function showRecipePopup(e) {
     var box = document.getElementById('recipebox');
 
@@ -109,40 +143,7 @@
     }
   }
 
-  function renderWeek(weekHtml) {
-    var weekDisplay = document.getElementById('week');
-    weekDisplay.innerHTML = weekHtml;
 
-    var buttons = weekDisplay.querySelectorAll('button.open-recipe-box');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].addEventListener('click', function (e) {
-        const scheduleButton = e.currentTarget;
-        state.selectedDate = scheduleButton.dataset.timestamp;
-        e.stopPropagation();
-        showRecipePopup(e);
-      });
-    }
-  }
-
-  function load(reloading) {
-    if (!reloading) {
-      document.getElementById('recipebox').innerHTML = 'Loading';
-      google.script.run.withSuccessHandler(
-        (r) => {
-          renderRecipesPopup(r)
-        }
-      ).createRecipeListLayout();
-
-      document.getElementById('week').innerHTML = 'Loading';
-    }
-    
-
-    google.script.run.withSuccessHandler(
-      (w) => {
-        renderWeek(w)
-      }
-    ).createWeekLayout();
-  }
 
   load();
 </script>

@@ -1,3 +1,8 @@
+/* Render Site */
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('App')
+}
+
 /* Sheets */
 function getHeaders(sheet) {
   var headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues();
