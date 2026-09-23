@@ -52,7 +52,7 @@
   </head>
   <body>
     <h1>Recipe Box</h1>
-    <div id="recipebox" style="display: none;"></div>
+    <div id="recipebox" style="display: block;"></div>
     <div id="week"></div>
   </body>
 </html>
@@ -64,6 +64,8 @@
   }
 
   function load(reloading) {
+    // TODO: Render Recipe box
+    
     google.script.run.withSuccessHandler(
       (w) => {
         renderWeek(w)

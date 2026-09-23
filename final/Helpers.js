@@ -3,6 +3,13 @@ function doGet() {
   return HtmlService.createHtmlOutputFromFile('App')
 }
 
+/* Dates */
+function getDateFromNow(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
 /* Sheets */
 function getHeaders(sheet) {
   var headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues();
@@ -21,11 +28,4 @@ function getColumnIndex(sheet, headerTitle) {
 
 function getRows(sheet, excludeHeader = true) {
   return sheet.getRange(excludeHeader ? 2 : 1, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getValues();
-}
-
-/* Dates */
-function getDateFromNow(days) {
-  const date = new Date();
-  date.setDate(date.getDate() + days);
-  return date;
 }

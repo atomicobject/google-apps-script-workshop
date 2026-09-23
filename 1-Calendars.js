@@ -1,8 +1,13 @@
+// TODO: Add dinner hour
+
 function checkWeekSchedule() {
+  // TODO: Get default Google Calendar
   const week = {};
   for (let i = 0; i < 7; i++) {
     const date = getDateFromNow(i);
+    // TODO: Get Events For this Day from Google Calendar
     week[date.toDateString()] = {
+      // TODO: Set isBusyDuringDinner
       timestamp: date.getTime()
     };
   }
@@ -11,6 +16,7 @@ function checkWeekSchedule() {
 
 /* Render Week */
 function formatDayLabel (day) {
+  // TODO: Choose takeout if busy during dinner
   return `<button class="open-recipe-box" data-timestamp="${day.timestamp}">Choose a Recipe</button>`;
 }
 
