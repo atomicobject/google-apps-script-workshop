@@ -10,6 +10,14 @@ function getDateFromNow(days) {
   return date;
 }
 
+function getWeekStartAndEndDate(weekDates) {
+  const start = new Date(weekDates[0]);
+  start.setDate(start.getDate() - start.getDay()); // subtract to day 0 (beginning of week)
+  const end   = new Date(weekDates[weekDates.length - 1]); 
+  end.setDate(end.getDate() + (6 - end.getDay())); // add to day 6 (end of week)
+  return {start, end}
+}
+
 /* Sheets */
 function getHeaders(sheet) {
   var headerRow = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues();

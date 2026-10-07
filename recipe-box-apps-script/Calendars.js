@@ -1,4 +1,36 @@
+/* Render Week */
 const DINNER_HOUR = 14;
+const MEAL_EVENT_PREFIX = 'Meal Plan:';
+
+function createWeekLayout() {
+  const week = checkWeekSchedule();
+  if (!week) { return "No days"; }
+
+  const {start, end} = getWeekStartAndEndDate(Object.keys(week));
+
+  let html = '';
+  for (var c = new Date(start); c <= end; c.setDate(c.getDate() + 1)) {
+    const day = week[c.toDateString()];
+    html += formatCalendarCard(c, day);
+  }
+  console.log(html);
+  return html;
+}
+
+function checkWeekSchedule() {
+  const calendar = CalendarApp.getDefaultCalendar();
+  const week = {};
+  for (let i = 0; i < 7; i++) {
+    const date = getDateFromNow(i);
+    const events = calendar.getEventsForDay(date);
+    week[date.toDateString()] = {
+      isBusyDuringDinner: getIsBusyDuringDinner(events),
+      scheduledMeal: getNameOfScheduledMeal(events),
+      timestamp: date.getTime()
+    };
+  }
+  return week;
+}
 
 function getIsBusyDuringDinner(events) {
   let isBusyDuringDinner = false;
@@ -21,28 +53,14 @@ function getNameOfScheduledMeal(events) {
   }
 }
 
-function checkWeekSchedule() {
-  const calendar = CalendarApp.getDefaultCalendar();
-  const week = {};
-  for (let i = 0; i < 7; i++) {
-    const date = getDateFromNow(i);
-    const events = calendar.getEventsForDay(date);
-    week[date.toDateString()] = {
-      isBusyDuringDinner: getIsBusyDuringDinner(events),
-      scheduledMeal: getNameOfScheduledMeal(events),
-      timestamp: date.getTime()
-    };
-  }
-  return week;
-}
 
 /* Render Week */
 function formatDayLabel (day) {
   if (day.isBusyDuringDinner) {
-    return `<h4>Takeout</h4>`
+    return '<h4>Takeout</h4>'
   }
   if (day.scheduledMeal) {
-    return `<h4>${day.scheduledMeal}</h4>`
+    `<h4>${day.scheduledMeal}</h4>`;
   }
   return `<button class="open-recipe-box" data-timestamp="${day.timestamp}">Choose a Recipe</button>`;
 }
@@ -60,26 +78,6 @@ function formatCalendarCard(c, day) {
         <div>${formatDayLabel(day)}</div>
       </div>`;
   }
-}
-
-function createWeekLayout() {
-  const week = checkWeekSchedule();
-  if (!week) { return "No days"; }
-
-  const weekDates = Object.keys(week);
-
-  const start = new Date(weekDates[0]);
-  start.setDate(start.getDate() - start.getDay()); // subtract to day 0 (beginning of week)
-  const end   = new Date(weekDates[weekDates.length - 1]); 
-  end.setDate(end.getDate() + (6 - end.getDay())); // add to day 6 (end of week)
-
-  let html = '';
-  for (var c = new Date(start); c <= end; c.setDate(c.getDate() + 1)) {
-    const day = week[c.toDateString()];
-    html += formatCalendarCard(c, day);
-  }
-  console.log(html);
-  return html;
 }
 
 /* Schedule Events */

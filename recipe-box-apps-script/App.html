@@ -58,7 +58,7 @@
 </html>
 
 <script>
-  let state = {selectedDate: null};
+  const state = {selectedDate: null};
 
   function renderWeek(weekHtml) {
     var weekDisplay = document.getElementById('week');
@@ -75,6 +75,40 @@
     }
   }
 
+  function load(reloading) {
+    if (!reloading) {
+      document.getElementById('recipebox').innerHTML = 'Loading';
+      google.script.run.withSuccessHandler(
+        (r) => {
+          renderRecipesPopup(r)
+        }
+      ).createRecipeListLayout();
+
+      document.getElementById('week').innerHTML = 'Loading';
+    }
+
+    google.script.run.withSuccessHandler(
+      (w) => {
+        renderWeek(w)
+      }
+    ).createWeekLayout();
+  }
+
+  // Render Recipe Box
+  function renderRecipesPopup(recipeHtml) {
+    var recipeBox = document.getElementById('recipebox');
+    recipeBox.innerHTML = recipeHtml;
+
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#recipebox')) {
+        hideRecipePopup();
+      }
+    });
+
+    addRecipeClickHandlers();
+  }
+
+  // Show / Hide Recipe Box
   function showRecipePopup(e) {
     var box = document.getElementById('recipebox');
 
@@ -83,33 +117,13 @@
     box.style.top = (Math.max(e.pageY - box.offsetHeight, 0)) + 'px';
   }
 
-   function hideRecipePopup() {
+  function hideRecipePopup() {
     document.getElementById('recipebox').style.display = 'none';
   }
 
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest('#recipebox')) {
-      hideRecipePopup();
-    }
-  });
-
-  function scheduleRecipe(e) {
-    const button = e.currentTarget;
-    console.log(button);
-    console.log("schedule recipe", button.dataset.recipeName, 'on date', state.selectedDate);
-    google.script.run.withSuccessHandler(
-      () => {
-        console.log('yeah, its scheduled!');
-        hideRecipePopup();
-        load(true);
-      }
-    ).scheduleRecipeOnCalendar(button.dataset.recipeName, state.selectedDate);
-  }
-
-  function renderRecipesPopup(recipeHtml) {
+  // Add Click Handlers to each Recipe button
+  function addRecipeClickHandlers() {
     var recipeBox = document.getElementById('recipebox');
-    recipeBox.innerHTML = recipeHtml;
-
     var buttons = recipeBox.querySelectorAll('button.schedule-recipe');
     for (var i = 0; i < buttons.length; i++) {
       buttons[i].addEventListener('click', (e) => {
@@ -124,24 +138,17 @@
     }
   }
 
-  function load(reloading) {
-    if (!reloading) {
-      document.getElementById('recipebox').innerHTML = 'Loading';
-      google.script.run.withSuccessHandler(
-        (r) => {
-          renderRecipesPopup(r)
-        }
-      ).createRecipeListLayout();
-
-      document.getElementById('week').innerHTML = 'Loading';
-    }
-    
+  function scheduleRecipe(e) {
+    const button = e.currentTarget;
+    console.log("schedule recipe", button.dataset.recipeName, 'on date', state.selectedDate);
     google.script.run.withSuccessHandler(
-      (w) => {
-        renderWeek(w)
+      () => {
+        console.log('yeah, its scheduled!');
+        hideRecipePopup();
+        load(true);
       }
-    ).createWeekLayout();
+    ).scheduleRecipeOnCalendar(button.dataset.recipeName, state.selectedDate);
   }
 
-  load()
+  load();
 </script>

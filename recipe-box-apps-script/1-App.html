@@ -52,19 +52,27 @@
   </head>
   <body>
     <h1>Recipe Box</h1>
-    <div id="recipebox" style="display: block;"></div>
+    <div id="recipebox" style="display: none;"></div>
     <div id="week"></div>
   </body>
 </html>
 
 <script>
+  // TODO 2: Set state variable
+
   function renderWeek(weekHtml) {
     var weekDisplay = document.getElementById('week');
     weekDisplay.innerHTML = weekHtml;
+
+    // TODO 2: Add click handler to each day's button
   }
 
   function load(reloading) {
-    // TODO: Render Recipe box
+    if (!reloading) {
+    // TODO 2: Fetch recipes
+
+      document.getElementById('week').innerHTML = 'Loading';
+    }
     
     google.script.run.withSuccessHandler(
       (w) => {
@@ -72,6 +80,16 @@
       }
     ).createWeekLayout();
   }
+
+  // TODO 2: Add function renderRecipesPopup
+
+  // TODO 2: Add function showRecipePopup
+
+  // TODO 2: Add function hideRecipePopup
+
+  // TODO 3: Add function addRecipeClickHandlers
+
+  // TODO 3: Schedule recipe on calendar
 
   load()
 </script>
