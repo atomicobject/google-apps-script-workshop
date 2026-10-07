@@ -2,7 +2,15 @@
 <html>
   <head>
     <base target="_top">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap">
     <style>
+      h1 {
+        font-family: 'Great Vibes', 'Snell Roundhand', cursive;
+        text-align: center;
+        font-size: 40px;
+        color: #7a4a2a;
+      }
+
       #week {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
@@ -42,16 +50,137 @@
       #week .card h4 { margin: 0; font-size: 14px; }
       #week .card button { font-size: 12px; cursor: pointer; }
 
+      /* Recipe box: walnut box holding maple divider cards, one tab per recipe */
       #recipebox {
+        --walnut: #4a2f1f;
+        --maple: #ead9bd;
+        --engraving: #7a4a2a;
+        --grain: repeating-linear-gradient(91deg, rgba(122, 74, 42, .07) 0 1px, transparent 1px 7px);
+        --tab-height: 32px;
+        --tab-step: 36px;
+        --tab-width: 31%;
         position: absolute;
-        background: #ffecec;
-        border: solid 1px black;
-        padding: 10px;
+        z-index: 10;
+        box-sizing: border-box;
+        width: 440px;
+        max-width: calc(100vw - 16px);
+        padding: 18px 16px 44px;
+        border: 1px solid #2c1a10;
+        border-radius: 6px;
+        background:
+          linear-gradient(to top, rgba(255, 255, 255, .07) 0 42px, rgba(0, 0, 0, .55) 42px 44px, transparent 44px),
+          repeating-linear-gradient(92deg, rgba(0, 0, 0, .1) 0 2px, transparent 2px 9px),
+          linear-gradient(#5a3a26, var(--walnut));
+        box-shadow:
+          inset 0 0 0 3px rgba(255, 255, 255, .06),
+          inset 0 12px 18px rgba(0, 0, 0, .45),
+          0 10px 24px rgba(0, 0, 0, .4);
+        color: var(--maple);
+        font-family: Georgia, 'Times New Roman', serif;
       }
+
+      /* Brass latch on the front lip */
+      #recipebox::before {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 34px;
+        height: 22px;
+        border: 1px solid #4d3a14;
+        border-radius: 4px;
+        background:
+          radial-gradient(circle, #3a2a10 0 3px, transparent 3.5px),
+          linear-gradient(#d9b96a, #8a6a2a);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .5);
+      }
+
+      /* Front card with the engraved title */
+      #recipebox::after {
+        content: 'Recipe Box';
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 120px;
+        border-radius: 3px 3px 0 0;
+        background: var(--grain), var(--maple);
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+        color: var(--engraving);
+        font-family: 'Great Vibes', 'Snell Roundhand', cursive;
+        font-size: 46px;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, .55);
+      }
+
+      /* Each recipe is a divider card; only its tab and a sliver show */
+      #recipebox .card {
+        --tab-left: 3%;
+        position: relative;
+        height: var(--tab-step);
+      }
+
+      #recipebox .card:nth-child(3n + 2) { --tab-left: 34.5%; }
+      #recipebox .card:nth-child(3n) { --tab-left: 66%; }
+      #recipebox .card:nth-child(even) { --maple: #e2cfae; }
+
+      #recipebox .card::after {
+        content: '';
+        position: absolute;
+        top: var(--tab-height);
+        left: 0;
+        right: 0;
+        height: calc(var(--tab-step) + 8px);
+        border-radius: 3px 3px 0 0;
+        background: var(--grain), var(--maple);
+        box-shadow: 0 -2px 3px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+      }
+
+      #recipebox .card h3,
+      #recipebox .card button {
+        position: absolute;
+        top: 0;
+        left: var(--tab-left);
+        box-sizing: border-box;
+        width: var(--tab-width);
+        height: var(--tab-height);
+        margin: 0;
+        border-radius: 5px 5px 0 0;
+      }
+
+      #recipebox .card h3 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 0 6px;
+        background: var(--grain), var(--maple);
+        box-shadow: 0 -2px 3px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+        color: var(--engraving);
+        font-size: 11px;
+        font-weight: normal;
+        line-height: 1.15;
+        letter-spacing: .06em;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      /* The Schedule button is an invisible overlay, so clicking the tab schedules */
+      #recipebox .card button {
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: transparent;
+        font-size: 0;
+        cursor: pointer;
+      }
+
+      #recipebox .card button:hover { background: rgba(255, 255, 255, .4); }
+      #recipebox .card button:focus-visible { outline: 2px solid #d9b96a; outline-offset: 1px; }
     </style>
   </head>
   <body>
-    <h1>Recipe Box</h1>
+    <h1>Weekly Meal Planner</h1>
     <div id="recipebox" style="display: none;"></div>
     <div id="week"></div>
   </body>
